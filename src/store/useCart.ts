@@ -61,9 +61,16 @@ export const useCart = create<CartStore>()(
         }),
         {
             name: "voidstitch-cart",
-            storage: createJSONStorage(() =>
-                typeof window !== "undefined" ? window.localStorage : undefined
-            ),
+            storage: createJSONStorage(() => {
+                if (typeof window !== "undefined") {
+                    return window.localStorage;
+                }
+                return {
+                    getItem: () => null,
+                    setItem: () => {},
+                    removeItem: () => {},
+                };
+            }),
             partialize: (state) => ({ items: state.items }),
         }
     )
